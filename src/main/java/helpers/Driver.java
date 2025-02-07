@@ -8,6 +8,8 @@ import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import com.codeborne.selenide.WebDriverRunner;
+import java.time.Duration;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,40 +20,12 @@ import java.util.List;
 public class Driver {
 
     public static void initDriver() {
-
-        // Get settings from command line
-
-        TestConfig.initConfig();
-
-        // Set settings for selenide browser
-
-        Configuration.pageLoadStrategy = "eager";
-        Configuration.browserSize = "1920x1080";
-        Configuration.holdBrowserOpen = false;
-        Configuration.screenshots = false;
-
-        if(TestConfig.isHeadless()) {
-            Configuration.headless = true;
-        } else {
-            Configuration.headless = false;
-        }
-
-        switch (TestConfig.browser)
-        {
-            case "chrome":
-                Configuration.browser = Browsers.CHROME;
-                break;
-            case "firefox":
-                Configuration.browser = Browsers.FIREFOX;
-                break;
-            default:
-                Configuration.browser = Browsers.CHROME;
-                break;
-        }
+        // Configuration is now handled in A_BaseTest
     }
 
     public static WebDriver currentDriver() {
-        return WebDriverRunner.getSelenideDriver().getWebDriver();
+        // Changed from getSelenideDriver() to getWebDriver()
+        return WebDriverRunner.getWebDriver();
     }
 
     public static void open(String url) {
@@ -63,17 +37,13 @@ public class Driver {
     }
 
     public static void executeJs(String script) {
-        JavascriptExecutor js = (JavascriptExecutor)currentDriver();
-        try {
-            js.executeScript(script);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Selenide.executeJavaScript(script);
     }
 
     public static void waitForUrlContains(String urlChunk) {
-        WebDriverWait wait = new WebDriverWait(currentDriver(), 10);
-        wait.until(ExpectedConditions.urlContains(urlChunk));
+        // Changed from timeout int to Duration
+        Selenide.Wait().withTimeout(Duration.ofSeconds(10))
+                .until(driver -> driver.getCurrentUrl().contains(urlChunk));
     }
 
     public static void waitForUrlDoesNotContain(String urlChunk) {
@@ -93,13 +63,11 @@ public class Driver {
     }
 
     public static void clearCookies() {
-        open(AppConfig.baseUrl);
         Selenide.clearBrowserCookies();
-        Selenide.clearBrowserLocalStorage();
     }
 
     public static void close() {
-        currentDriver().quit();
+        WebDriverRunner.closeWebDriver();
     }
 
     public static void wait(int seconds)
@@ -144,6 +112,11 @@ public class Driver {
 
     public static void deleteCookie(String cookieName) {
         currentDriver().manage().deleteCookieNamed(cookieName);
+    }
+
+    // Add any Edge-specific methods if needed
+    public static boolean isEdge() {
+        return TestConfig.isEdge();
     }
 
 }

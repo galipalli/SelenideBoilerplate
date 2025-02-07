@@ -1,8 +1,24 @@
 package helpers;
 
 public class TestConfig {
+    private static String browser = System.getProperty("browser", "chrome"); // Default to chrome if not specified
 
-    public static String browser = "chrome";
+    public static String getBrowser() {
+        return browser.toLowerCase();
+    }
+
+    public static void setBrowser(String browserName) {
+        browser = browserName.toLowerCase();
+    }
+
+    public static boolean isChrome() {
+        return getBrowser().equals("chrome");
+    }
+
+    public static boolean isEdge() {
+        return getBrowser().equals("edge");
+    }
+
     public static String headless = "0";
 
     public static void initConfig() {

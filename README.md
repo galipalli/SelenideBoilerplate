@@ -1,14 +1,19 @@
 #SelenideBoilerplate (Java + Selenide + TestNG + Allure)
 
-Simple template for automated end-to-end testing.
+# Selenide Boilerplate
 
-Article - https://habr.com/ru/post/504408/
+[![Selenide Tests](https://github.com/{username}/{repo-name}/actions/workflows/test.yml/badge.svg)](https://github.com/{username}/{repo-name}/actions/workflows/test.yml)
 
-Run test - `mvn test -Dbrowser=chrome -Dheadless=1` or just `mvn test`
+A test automation framework using Selenide with support for:
+- Multiple browsers (Chrome, Edge)
+- Allure reporting
+- GitHub Actions CI/CD
+- Parallel test execution
 
-**parameters:**
+## Running Tests
 
-- `browser` - chrome or firefox. default - chrome 
-- `headless` - 0 or 1. default - 0
+Local execution:
 
-Generate allure report  - `allure serve target/allure-results`
+```bash
+mvn clean test
+```
